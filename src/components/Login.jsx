@@ -6,8 +6,27 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [magicLinkSent, setMagicLinkSent] = useState(false)
+  const [usePassword, setUsePassword] = useState(false)
 
-  async function handleLogin(e) {
+  async function handleMagicLink(e) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false },
+    })
+    if (error) {
+      setError('Kunne ikke sende login-link. Tjek din email og prøv igen.')
+    } else {
+      setMagicLinkSent(true)
+    }
+    setLoading(false)
+  }
+
+  async function handlePassword(e) {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -24,34 +43,72 @@ export default function Login() {
       <div style={styles.card}>
         <div style={styles.logo}>👗</div>
         <h1 style={styles.title}>Tøjappen</h1>
-        <p style={styles.subtitle}>Log ind for at fortsætte</p>
 
-        <form onSubmit={handleLogin} style={styles.form}>
-          <input
-            style={styles.input}
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-          />
-          <input
-            style={styles.input}
-            type="password"
-            placeholder="Adgangskode"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
-
-          {error && <p style={styles.error}>{error}</p>}
-
-          <button style={styles.button} type="submit" disabled={loading}>
-            {loading ? 'Logger ind...' : 'Log ind'}
-          </button>
-        </form>
+        {magicLinkSent ? (
+          <div style={styles.successBox}>
+            <div style={styles.successIcon}>📬</div>
+            <p style={styles.successText}>
+              Vi har sendt et login-link til <strong>{email}</strong>.
+              Tjek din indbakke og tryk på linket.
+            </p>
+            <button style={styles.linkButton} onClick={() => { setMagicLinkSent(false); setEmail('') }}>
+              Prøv med en anden email
+            </button>
+          </div>
+        ) : usePassword ? (
+          <>
+            <p style={styles.subtitle}>Log ind med adgangskode</p>
+            <form onSubmit={handlePassword} style={styles.form}>
+              <input
+                style={styles.input}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+              <input
+                style={styles.input}
+                type="password"
+                placeholder="Adgangskode"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+              {error && <p style={styles.error}>{error}</p>}
+              <button style={styles.button} type="submit" disabled={loading}>
+                {loading ? 'Logger ind...' : 'Log ind'}
+              </button>
+            </form>
+            <button style={styles.linkButton} onClick={() => { setUsePassword(false); setError('') }}>
+              ← Send mig et login-link i stedet
+            </button>
+          </>
+        ) : (
+          <>
+            <p style={styles.subtitle}>Indtast din email, så sender vi dig et login-link</p>
+            <form onSubmit={handleMagicLink} style={styles.form}>
+              <input
+                style={styles.input}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+              {error && <p style={styles.error}>{error}</p>}
+              <button style={styles.button} type="submit" disabled={loading}>
+                {loading ? 'Sender...' : 'Send login-link'}
+              </button>
+            </form>
+            <button style={styles.linkButton} onClick={() => { setUsePassword(true); setError('') }}>
+              Log ind med adgangskode
+            </button>
+          </>
+        )}
       </div>
     </div>
   )
@@ -106,4 +163,23 @@ const styles = {
     cursor: 'pointer',
     marginTop: 8,
   },
+  linkButton: {
+    background: 'none',
+    border: 'none',
+    color: '#888',
+    fontSize: 14,
+    cursor: 'pointer',
+    marginTop: 16,
+    textDecoration: 'underline',
+    padding: 0,
+  },
+  successBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 12,
+    padding: '8px 0',
+  },
+  successIcon: { fontSize: 48 },
+  successText: { color: '#444', fontSize: 15, lineHeight: 1.6, margin: 0 },
 }
