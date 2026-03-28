@@ -1,6 +1,32 @@
+const { createClient } = require('@supabase/supabase-js')
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
+  }
+
+  // Verifikér Supabase JWT — afviser uautoriserede kald
+  const authHeader = event.headers['authorization'] || ''
+  const token = authHeader.replace('Bearer ', '').trim()
+  if (!token) {
+    return {
+      statusCode: 401,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Ikke autoriseret' }),
+    }
+  }
+
+  const supabase = createClient(
+    process.env.VITE_SUPABASE_URL,
+    process.env.VITE_SUPABASE_ANON_KEY
+  )
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+  if (authError || !user) {
+    return {
+      statusCode: 401,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Ikke autoriseret' }),
+    }
   }
 
   try {
@@ -16,6 +42,14 @@ exports.handler = async (event) => {
       }
     }
 
+    // Feltlængdebegrænsning — forhindrer prompt injection via lange strenge
+    const truncate = (str, max) => (str || '').toString().slice(0, max)
+    const safeBrand = truncate(item.brand, 100)
+    const safeType = truncate(item.type, 100)
+    const safeColour = truncate(item.colour, 100)
+    const safeCondition = truncate(item.condition, 50)
+    const safeDescription = truncate(item.description, 500)
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -29,33 +63,31 @@ exports.handler = async (event) => {
         messages: [{
           role: 'user',
           content: `Du skriver Vinted-opslag på dansk. Tøjstykke:
-- Mærke: ${item.brand}
-- Type: ${item.type}
-- Farve: ${item.colour}
-- Stand: ${item.condition}
+- Mærke: ${safeBrand}
+- Type: ${safeType}
+- Farve: ${safeColour}
+- Stand: ${safeCondition}
+- Beskrivelse: ${safeDescription}
+- Pris: ${price} kr
 - Størrelse: ${item.size}
-- Pris: ${item.price} kr
-- Materiale: ${item.material || 'ukendt'}
-- Beskrivelse: ${item.description}
-
-Skriv et Vinted-opslag på 50-80 ord. Tonen skal være venlig og uformel. Start med mærke og type. Nævn stand og størrelse. Afslut med "Sender gerne! 📦"
-Returner KUN opslaget, ingen forklaring.`,
+Skriv et kort, sælgende Vinted-opslag på dansk (3-5 sætninger). Inkluder mærke, type, farve, stand og størrelse. Afslut med pris. Returner KUN selve opslagsteksten, ingen overskrift eller markdown.`,
         }],
       }),
     })
 
     const data = await response.json()
+    const listing = data.content[0].text.trim()
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ listing: data.content[0].text }),
+      body: JSON.stringify({ listing }),
     }
   } catch (err) {
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: err.message }),
+      body: JSON.stringify({ error: 'Intern fejl' }),
     }
   }
 }
