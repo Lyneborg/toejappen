@@ -103,7 +103,11 @@ Vær ærlig om stand. Sig hvad du ser. Returner KUN valid JSON, ingen forklaring
     }
 
     const data = await response.json()
-    const result = JSON.parse(data.content[0].text)
+    let rawText = data.content[0].text.trim()
+        if (rawText.startsWith('```')) {
+          rawText = rawText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
+        }
+        const result = JSON.parse(rawText)
 
     return {
       statusCode: 200,
