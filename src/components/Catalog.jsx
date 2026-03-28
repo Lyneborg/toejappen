@@ -16,7 +16,24 @@ export default function Catalog({ onAdd, onSelect }) {
       .select('*')
       .order('created_at', { ascending: false })
 
-    if (!error) setItems(data || [])
+    if (!error && data) {
+      // Generer signed URLs (1 time) så kun indlogget bruger kan se billeder
+      const itemsWithSignedUrls = await Promise.all(
+        data.map(async (item) => {
+          if (item.image_url) {
+            const path = item.image_url.split('/item-images/')[1]
+            if (path) {
+              const { data: signed } = await supabase.storage
+                .from('item-images')
+                .createSignedUrl(path, 3600)
+              return { ...item, image_url: signed?.signedUrl || item.image_url }
+            }
+          }
+          return item
+        })
+      )
+      setItems(itemsWithSignedUrls)
+    }
     setLoading(false)
   }
 
@@ -27,20 +44,20 @@ export default function Catalog({ onAdd, onSelect }) {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.headerTitle}>👗 Mit tøj</h1>
+        <h1 style={styles.headerTitle}>ð Mit tÃ¸j</h1>
         <button onClick={handleLogout} style={styles.logoutBtn}>Log ud</button>
       </div>
 
       <div style={styles.content}>
         {loading ? (
           <div style={styles.centered}>
-            <p style={styles.loadingText}>Henter tøj...</p>
+            <p style={styles.loadingText}>Henter tÃ¸j...</p>
           </div>
         ) : items.length === 0 ? (
           <div style={styles.empty}>
-            <div style={styles.emptyIcon}>👗</div>
-            <h2 style={styles.emptyTitle}>Ingen tøjstykker endnu</h2>
-            <p style={styles.emptyText}>Tryk på + for at tilføje dit første stykke tøj</p>
+            <div style={styles.emptyIcon}>ð</div>
+            <h2 style={styles.emptyTitle}>Ingen tÃ¸jstykker endnu</h2>
+            <p style={styles.emptyText}>Tryk pÃ¥ + for at tilfÃ¸je dit fÃ¸rste stykke tÃ¸j</p>
           </div>
         ) : (
           <div style={styles.grid}>
@@ -62,7 +79,7 @@ function ItemCard({ item, onClick }) {
       {item.image_url ? (
         <img src={item.image_url} alt={item.type} style={styles.cardImage} />
       ) : (
-        <div style={styles.cardPlaceholder}>📷</div>
+        <div style={styles.cardPlaceholder}>ð·</div>
       )}
       <div style={styles.cardInfo}>
         <p style={styles.cardBrand}>{item.brand}</p>
