@@ -44,7 +44,7 @@ exports.handler = async (event) => {
     // Valider filtype via magic bytes — afviser .html, .svg og andre ikke-billeder
     const binary = Buffer.from(imageBase64.slice(0, 16), 'base64')
     const isJPEG = binary[0] === 0xFF && binary[1] === 0xD8
-    const isPNG = binary[0] === 0x89 && binary[1] === 0x50
+    const isPNG  = binary[0] === 0x89 && binary[1] === 0x50
     const isWebP = binary[8] === 0x57 && binary[9] === 0x45
 
     if (!isJPEG && !isPNG && !isWebP) {
@@ -67,7 +67,7 @@ exports.handler = async (event) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1024,
         messages: [{
           role: 'user',
@@ -92,6 +92,16 @@ Vær ærlig om stand. Sig hvad du ser. Returner KUN valid JSON, ingen forklaring
       }),
     })
 
+    if (!response.ok) {
+      const errBody = await response.text()
+      console.error('Anthropic API fejl:', response.status, errBody)
+      return {
+        statusCode: 502,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'AI-tjeneste utilgængelig' }),
+      }
+    }
+
     const data = await response.json()
     const result = JSON.parse(data.content[0].text)
 
@@ -101,6 +111,7 @@ Vær ærlig om stand. Sig hvad du ser. Returner KUN valid JSON, ingen forklaring
       body: JSON.stringify(result),
     }
   } catch (err) {
+    console.error('analyse function error:', err)
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
