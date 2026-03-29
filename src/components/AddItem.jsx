@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { analyseClothingImage, generateVintedListing } from '../lib/anthropic'
 
-// Tjekker magic bytes — afviser alt der ikke er JPEG, PNG eller WebP
+// Tjekker magic bytes â€” afviser alt der ikke er JPEG, PNG eller WebP
 async function validateImageType(file) {
   const buf = await file.slice(0, 12).arrayBuffer()
   const b = new Uint8Array(buf)
@@ -12,7 +12,7 @@ async function validateImageType(file) {
   return isJPEG || isPNG || isWebP
 }
 
-// Skalerer og komprimerer til maks 1920px + 2MB JPEG — hurtigere AI og billigere upload
+// Skalerer og komprimerer til maks 1920px + 2MB JPEG â€” hurtigere AI og billigere upload
 function compressImage(file) {
   return new Promise((resolve) => {
     const img = new Image()
@@ -54,7 +54,7 @@ export default function AddItem({ onBack, onSaved }) {
 
     const valid = await validateImageType(file)
     if (!valid) {
-      setError('Kun JPEG, PNG og WebP billeder er underst�ttet')
+      setError('Kun JPEG, PNG og WebP billeder er understøttet')
       return
     }
 
@@ -95,11 +95,11 @@ export default function AddItem({ onBack, onSaved }) {
   async function handleGenerateVinted() {
     const priceNum = parseInt(form.price)
     if (!form.size.trim() || form.size.trim().length > 20) {
-      setError('Udfyld st�rrelse (maks 20 tegn)')
+      setError('Udfyld størrelse (maks 20 tegn)')
       return
     }
     if (isNaN(priceNum) || priceNum < 1 || priceNum > 10000) {
-      setError('Pris skal v�re mellem 1 og 10.000 kr')
+      setError('Pris skal være mellem 1 og 10.000 kr')
       return
     }
     setLoading(true)
@@ -121,7 +121,7 @@ export default function AddItem({ onBack, onSaved }) {
     try {
       const { data: { user } } = await supabase.auth.getUser()
 
-      // Altid .jpg — filnavnet er irrelevant for sikkerheden
+      // Altid .jpg â€” filnavnet er irrelevant for sikkerheden
       const path = `${user.id}/${Date.now()}.jpg`
       const { error: uploadError } = await supabase.storage
         .from('item-images')
@@ -163,7 +163,7 @@ export default function AddItem({ onBack, onSaved }) {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <button onClick={onBack} style={styles.backBtn}>← Tilbage</button>
+        <button onClick={onBack} style={styles.backBtn}>â† Tilbage</button>
         <h1 style={styles.headerTitle}>
           {step === 'foto' && 'Tag et billede'}
           {step === 'analyse' && 'Analyserer...'}
@@ -192,14 +192,14 @@ export default function AddItem({ onBack, onSaved }) {
                 </button>
                 {error && <p style={styles.error}>{error}</p>}
                 <button onClick={handleAnalyse} style={styles.primaryBtn} disabled={loading}>
-                  {loading ? '⏳ Analyserer...' : '✨ Analys�r med AI'}
+                  {loading ? 'â³ Analyserer...' : 'âœ¨ Analysér med AI'}
                 </button>
               </div>
             ) : (
               <div style={styles.uploadArea} onClick={() => fileRef.current.click()}>
-                <div style={styles.uploadIcon}>📷</div>
+                <div style={styles.uploadIcon}>ðŸ“·</div>
                 <p style={styles.uploadText}>Tryk for at tage billede</p>
-                <p style={styles.uploadHint}>eller v�lg fra galleri</p>
+                <p style={styles.uploadHint}>eller vælg fra galleri</p>
               </div>
             )}
             {error && !imagePreview && <p style={styles.error}>{error}</p>}
@@ -210,9 +210,9 @@ export default function AddItem({ onBack, onSaved }) {
           <div style={styles.section}>
             {imagePreview && <img src={imagePreview} alt="Billede" style={styles.previewSmall} />}
             <div style={styles.aiBox}>
-              <h3 style={styles.aiTitle}>AI har g�ttet:</h3>
+              <h3 style={styles.aiTitle}>AI har gættet:</h3>
               <div style={styles.aiGrid}>
-                <AiField label="M�rke" value={aiData.brand} />
+                <AiField label="Mærke" value={aiData.brand} />
                 <AiField label="Type" value={aiData.type} />
                 <AiField label="Farve" value={aiData.colour} />
                 <AiField label="Stand" value={aiData.condition} />
@@ -220,7 +220,7 @@ export default function AddItem({ onBack, onSaved }) {
               </div>
             </div>
             <div style={styles.formGroup}>
-              <label style={styles.label}>St�rrelse *</label>
+              <label style={styles.label}>Størrelse *</label>
               <input
                 style={styles.input}
                 type="text"
@@ -245,7 +245,7 @@ export default function AddItem({ onBack, onSaved }) {
             </div>
             {error && <p style={styles.error}>{error}</p>}
             <button onClick={handleGenerateVinted} style={styles.primaryBtn} disabled={loading}>
-              {loading ? '⏳ Genererer opslag...' : '✍️ Lav Vinted-opslag'}
+              {loading ? 'â³ Genererer opslag...' : 'âœï¸ Lav Vinted-opslag'}
             </button>
           </div>
         )}
@@ -258,11 +258,11 @@ export default function AddItem({ onBack, onSaved }) {
               <p style={styles.listingText}>{vintedListing}</p>
             </div>
             <button onClick={handleCopy} style={styles.copyBtn}>
-              {copied ? '✅ Kopieret!' : '📋 Kopi�r opslag'}
+              {copied ? 'âœ… Kopieret!' : 'ðŸ“‹ Kopiér opslag'}
             </button>
             {error && <p style={styles.error}>{error}</p>}
             <button onClick={handleSave} style={styles.primaryBtn} disabled={loading}>
-              {loading ? '⏳ Gemmer...' : '💾 Gem i katalog'}
+              {loading ? 'â³ Gemmer...' : 'ðŸ’¾ Gem i katalog'}
             </button>
           </div>
         )}
