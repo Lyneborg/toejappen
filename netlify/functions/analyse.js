@@ -5,7 +5,7 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
 
-  // Verifikér Supabase JWT — afviser uautoriserede kald
+  // Verifik�r Supabase JWT  afviser uautoriserede kald
   const authHeader = event.headers['authorization'] || ''
   const token = authHeader.replace('Bearer ', '').trim()
   if (!token) {
@@ -29,7 +29,7 @@ exports.handler = async (event) => {
     }
   }
 
-  // Begræns body-størrelse (10MB base64 ≈ 7.5MB billede)
+  // Begr�ns body-st�rrelse (10MB base64 H 7.5MB billede)
   if ((event.body || '').length > 10 * 1024 * 1024) {
     return {
       statusCode: 413,
@@ -41,7 +41,7 @@ exports.handler = async (event) => {
   try {
     const { imageBase64, mimeType } = JSON.parse(event.body)
 
-    // Valider filtype via magic bytes — afviser .html, .svg og andre ikke-billeder
+    // Valider filtype via magic bytes  afviser .html, .svg og andre ikke-billeder
     const binary = Buffer.from(imageBase64.slice(0, 16), 'base64')
     const isJPEG = binary[0] === 0xFF && binary[1] === 0xD8
     const isPNG  = binary[0] === 0x89 && binary[1] === 0x50
@@ -55,7 +55,7 @@ exports.handler = async (event) => {
       }
     }
 
-    // Tillad kun kendte mime-typer — ignorer hvad klienten sender
+    // Tillad kun kendte mime-typer  ignorer hvad klienten sender
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp']
     const safeMimeType = allowedMimeTypes.includes(mimeType) ? mimeType : 'image/jpeg'
 
@@ -78,14 +78,14 @@ exports.handler = async (event) => {
             },
             {
               type: 'text',
-              text: `Du er en hjælper der analyserer tøj til Vinted-opslag. Se på dette billede af et tøjstykke og returner JSON med følgende felter:
-- brand: mærke (string, "Ukendt mærke" hvis ikke synligt)
-- type: tøjtype på dansk (string, f.eks. "bluse", "bukser", "kjole", "jakke", "sweater")
-- colour: farve/print på dansk (string)
-- condition: stand på dansk, én af: "Næsten ny", "God", "Brugt", "Meget brugt"
+              text: `Du er en hj�lper der analyserer t�j til Vinted-opslag. Se p� dette billede af et t�jstykke og returner JSON med f�lgende felter:
+- brand: m�rke (string, "Ukendt m�rke" hvis ikke synligt)
+- type: t�jtype p� dansk (string, f.eks. "bluse", "bukser", "kjole", "jakke", "sweater")
+- colour: farve/print p� dansk (string)
+- condition: stand p� dansk, �n af: "N�sten ny", "God", "Brugt", "Meget brugt"
 - material: materiale hvis synligt (string, eller null)
-- description: 2-4 sætninger om stykket på dansk, til brug i Vinted-opslag
-Vær ærlig om stand. Sig hvad du ser. Returner KUN valid JSON, ingen forklaring eller markdown.`,
+- description: 2-4 s�tninger om stykket p� dansk, til brug i Vinted-opslag
+V�r �rlig om stand. Sig hvad du ser. Returner KUN valid JSON, ingen forklaring eller markdown.`,
             },
           ],
         }],
@@ -98,7 +98,7 @@ Vær ærlig om stand. Sig hvad du ser. Returner KUN valid JSON, ingen forklaring
       return {
         statusCode: 502,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'AI-tjeneste utilgængelig' }),
+        body: JSON.stringify({ error: 'AI-tjeneste utilg�ngelig' }),
       }
     }
 
