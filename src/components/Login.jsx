@@ -19,7 +19,7 @@ export default function Login() {
       options: { shouldCreateUser: false },
     })
     if (error) {
-      setError('Kunne ikke sende login-link. Tjek din email og pr�v igen.')
+      setError('Kunne ikke sende login-link. Tjek din email og prøv igen.')
     } else {
       setMagicLinkSent(true)
     }
@@ -42,17 +42,17 @@ export default function Login() {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.logo}>👗</div>
-        <h1 style={styles.title}>T�jappen</h1>
+        <h1 style={styles.title}>Tøjappen</h1>
 
         {magicLinkSent ? (
           <div style={styles.successBox}>
-            <div style={styles.successIcon}>📬</div>
+            <div style={styles.successIcon}>ðŸ“¬</div>
             <p style={styles.successText}>
               Vi har sendt et login-link til <strong>{email}</strong>.
-              Tjek din indbakke og tryk p� linket.
+              Tjek din indbakke og tryk på linket.
             </p>
             <button style={styles.linkButton} onClick={() => { setMagicLinkSent(false); setEmail('') }}>
-              Pr�v med en anden email
+              Prøv med en anden email
             </button>
           </div>
         ) : usePassword ? (
@@ -83,12 +83,12 @@ export default function Login() {
               </button>
             </form>
             <button style={styles.linkButton} onClick={() => { setUsePassword(false); setError('') }}>
-              ← Send mig et login-link i stedet
+              â† Send mig et login-link i stedet
             </button>
           </>
         ) : (
           <>
-            <p style={styles.subtitle}>Indtast din email, s� sender vi dig et login-link</p>
+            <p style={styles.subtitle}>Indtast din email, så sender vi dig et login-link</p>
             <form onSubmit={handleMagicLink} style={styles.form}>
               <input
                 style={styles.input}
