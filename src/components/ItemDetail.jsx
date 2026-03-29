@@ -32,7 +32,7 @@ export default function ItemDetail({ item, onBack, onDeleted }) {
   }
 
   const conditionColor = {
-    'Næsten ny': '#2e7d32',
+    'N�sten ny': '#2e7d32',
     'God': '#1565c0',
     'Brugt': '#e65100',
     'Meget brugt': '#b71c1c',
@@ -41,10 +41,10 @@ export default function ItemDetail({ item, onBack, onDeleted }) {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <button onClick={onBack} style={styles.backBtn}>← Tilbage</button>
+        <button onClick={onBack} style={styles.backBtn}>� Tilbage</button>
         <h1 style={styles.headerTitle}>{item.brand}</h1>
         <button onClick={handleDelete} style={styles.deleteBtn} disabled={deleting}>
-          {deleting ? '...' : confirmDelete ? '⚠️ Bekræft' : '🗑️'}
+          {deleting ? '...' : confirmDelete ? '� Bekr�ft' : '=�'}
         </button>
       </div>
 
@@ -54,7 +54,7 @@ export default function ItemDetail({ item, onBack, onDeleted }) {
 
       <div style={styles.content}>
         <div style={styles.infoCard}>
-          <h2 style={styles.itemTitle}>{item.brand} — {item.type}</h2>
+          <h2 style={styles.itemTitle}>{item.brand}  {item.type}</h2>
           <p style={styles.itemColour}>{item.colour}</p>
 
           <div style={styles.tags}>
@@ -79,7 +79,7 @@ export default function ItemDetail({ item, onBack, onDeleted }) {
             <h3 style={styles.listingTitle}>Vinted-opslag</h3>
             <p style={styles.listingText}>{item.vinted_listing}</p>
             <button onClick={handleCopy} style={styles.copyBtn}>
-              {copied ? '✅ Kopieret!' : '📋 Kopiér opslag'}
+              {copied ? ' Kopieret!' : '=� Kopi�r opslag'}
             </button>
           </div>
         )}
