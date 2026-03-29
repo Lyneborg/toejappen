@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  LANG = "en_US.UTF-8"
+  LC_ALL = "en_US.UTF-8"
+  NODE_OPTIONS = "--max-old-space-size=4096"
+
 [functions]
   node_bundler = "esbuild"
 
@@ -17,7 +22,7 @@
   to = "/index.html"
   status = 200
 
-# Security + charset headers
+# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -25,15 +30,3 @@
   X-Content-Type-Options = "nosniff"
   Referrer-Policy = "strict-origin-when-cross-origin"
   Permissions-Policy = "camera=(self)"
-
-# Eksplicit charset for HTML (fix for browser encoding-problemer)
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-  Content-Type = "text/html; charset=utf-8"
-
-# Eksplicit charset for JavaScript-bundler
-[[headers]]
-  for = "/assets/*.js"
-  [headers.values]
-  Content-Type = "application/javascript; charset=utf-8"
