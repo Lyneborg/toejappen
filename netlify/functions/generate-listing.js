@@ -5,7 +5,7 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
 
-  // Verifikér Supabase JWT — afviser uautoriserede kald
+  // Verifik�r Supabase JWT  afviser uautoriserede kald
   const authHeader = event.headers['authorization'] || ''
   const token = authHeader.replace('Bearer ', '').trim()
   if (!token) {
@@ -32,17 +32,17 @@ exports.handler = async (event) => {
   try {
     const item = JSON.parse(event.body)
 
-    // Grundlæggende input-validering
+    // Grundl�ggende input-validering
     const price = parseInt(item.price)
     if (!item.size || isNaN(price) || price < 1 || price > 10000) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Ugyldig pris eller størrelse' }),
+        body: JSON.stringify({ error: 'Ugyldig pris eller st�rrelse' }),
       }
     }
 
-    // Feltlængdebegrænsning — forhindrer prompt injection via lange strenge
+    // Feltl�ngdebegr�nsning  forhindrer prompt injection via lange strenge
     const truncate = (str, max) => (str || '').toString().slice(0, max)
     const safeBrand = truncate(item.brand, 100)
     const safeType = truncate(item.type, 100)
@@ -62,15 +62,15 @@ exports.handler = async (event) => {
         max_tokens: 512,
         messages: [{
           role: 'user',
-          content: `Du skriver Vinted-opslag på dansk. Tøjstykke:
-- Mærke: ${safeBrand}
+          content: `Du skriver Vinted-opslag p� dansk. T�jstykke:
+- M�rke: ${safeBrand}
 - Type: ${safeType}
 - Farve: ${safeColour}
 - Stand: ${safeCondition}
 - Beskrivelse: ${safeDescription}
 - Pris: ${price} kr
-- Størrelse: ${item.size}
-Skriv et kort, sælgende Vinted-opslag på dansk (3-5 sætninger). Inkluder mærke, type, farve, stand og størrelse. Afslut med pris. Returner KUN selve opslagsteksten, ingen overskrift eller markdown.`,
+- St�rrelse: ${item.size}
+Skriv et kort, s�lgende Vinted-opslag p� dansk (3-5 s�tninger). Inkluder m�rke, type, farve, stand og st�rrelse. Afslut med pris. Returner KUN selve opslagsteksten, ingen overskrift eller markdown.`,
         }],
       }),
     })
