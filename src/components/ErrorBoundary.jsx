@@ -19,7 +19,7 @@ class ErrorBoundary extends Component {
       return (
         <div style={styles.container}>
           <div style={styles.box}>
-            <p style={styles.icon}>�</p>
+            <p style={styles.icon}>⚠️</p>
             <h2 style={styles.title}>Noget gik galt</h2>
             <p style={styles.message}>
               {this.state.error?.message || 'Der opstod en uventet fejl.'}
@@ -28,7 +28,7 @@ class ErrorBoundary extends Component {
               style={styles.btn}
               onClick={() => this.setState({ hasError: false, error: null })}
             >
-              Pr�v igen
+              Pr�v igen
             </button>
           </div>
         </div>
