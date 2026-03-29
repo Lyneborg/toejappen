@@ -5,7 +5,7 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
 
-  // Verifikï¿½r Supabase JWT  afviser uautoriserede kald
+  // Verifikér Supabase JWT â€” afviser uautoriserede kald
   const authHeader = event.headers['authorization'] || ''
   const token = authHeader.replace('Bearer ', '').trim()
   if (!token) {
@@ -32,17 +32,17 @@ exports.handler = async (event) => {
   try {
     const item = JSON.parse(event.body)
 
-    // Grundlï¿½ggende input-validering
+    // Grundlæggende input-validering
     const price = parseInt(item.price)
     if (!item.size || isNaN(price) || price < 1 || price > 10000) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Ugyldig pris eller stï¿½rrelse' }),
+        body: JSON.stringify({ error: 'Ugyldig pris eller størrelse' }),
       }
     }
 
-    // Feltlï¿½ngdebegrï¿½nsning  forhindrer prompt injection via lange strenge
+    // Feltlængdebegrænsning â€” forhindrer prompt injection via lange strenge
     const truncate = (str, max) => (str || '').toString().slice(0, max)
     const safeBrand = truncate(item.brand, 100)
     const safeType = truncate(item.type, 100)
@@ -62,15 +62,15 @@ exports.handler = async (event) => {
         max_tokens: 512,
         messages: [{
           role: 'user',
-          content: `Du skriver Vinted-opslag pï¿½ dansk. Tï¿½jstykke:
-- Mï¿½rke: ${safeBrand}
+          content: `Du skriver Vinted-opslag på dansk. Tøjstykke:
+- Mærke: ${safeBrand}
 - Type: ${safeType}
 - Farve: ${safeColour}
 - Stand: ${safeCondition}
 - Beskrivelse: ${safeDescription}
 - Pris: ${price} kr
-- Stï¿½rrelse: ${item.size}
-Skriv et kort, sï¿½lgende Vinted-opslag pï¿½ dansk (3-5 sï¿½tninger). Inkluder mï¿½rke, type, farve, stand og stï¿½rrelse. Afslut med pris. Returner KUN selve opslagsteksten, ingen overskrift eller markdown.`,
+- Størrelse: ${item.size}
+Skriv et kort, sælgende Vinted-opslag på dansk (3-5 sætninger). Inkluder mærke, type, farve, stand og størrelse. Afslut med pris. Returner KUN selve opslagsteksten, ingen overskrift eller markdown.`,
         }],
       }),
     })
