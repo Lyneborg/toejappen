@@ -17,7 +17,7 @@ export default function Catalog({ onAdd, onSelect }) {
       .order('created_at', { ascending: false })
 
     if (!error && data) {
-      // Generer signed URLs (1 time) sï¿½ kun indlogget bruger kan se billeder
+      // Generer signed URLs (1 time) så kun indlogget bruger kan se billeder
       const itemsWithSignedUrls = await Promise.all(
         data.map(async (item) => {
           if (item.image_url) {
