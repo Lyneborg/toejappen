@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { analyseClothingImage, generateVintedListing } from '../lib/anthropic'
 
-// Tjekker magic bytes â€” afviser alt der ikke er JPEG, PNG eller WebP
+// Tjekker magic bytes — afviser alt der ikke er JPEG, PNG eller WebP
 async function validateImageType(file) {
   const buf = await file.slice(0, 12).arrayBuffer()
   const b = new Uint8Array(buf)
@@ -12,7 +12,7 @@ async function validateImageType(file) {
   return isJPEG || isPNG || isWebP
 }
 
-// Skalerer og komprimerer til maks 1920px + 2MB JPEG â€” hurtigere AI og billigere upload
+// Skalerer og komprimerer til maks 1920px + 2MB JPEG — hurtigere AI og billigere upload
 function compressImage(file) {
   return new Promise((resolve) => {
     const img = new Image()
@@ -121,7 +121,7 @@ export default function AddItem({ onBack, onSaved }) {
     try {
       const { data: { user } } = await supabase.auth.getUser()
 
-      // Altid .jpg â€” filnavnet er irrelevant for sikkerheden
+      // Altid .jpg — filnavnet er irrelevant for sikkerheden
       const path = `${user.id}/${Date.now()}.jpg`
       const { error: uploadError } = await supabase.storage
         .from('item-images')
@@ -163,7 +163,7 @@ export default function AddItem({ onBack, onSaved }) {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <button onClick={onBack} style={styles.backBtn}>â† Tilbage</button>
+        <button onClick={onBack} style={styles.backBtn}>← Tilbage</button>
         <h1 style={styles.headerTitle}>
           {step === 'foto' && 'Tag et billede'}
           {step === 'analyse' && 'Analyserer...'}
