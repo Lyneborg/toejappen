@@ -192,7 +192,7 @@ export default function AddItem({ onBack, onSaved }) {
                 </button>
                 {error && <p style={styles.error}>{error}</p>}
                 <button onClick={handleAnalyse} style={styles.primaryBtn} disabled={loading}>
-                  {loading ? 'â³ Analyserer...' : 'âœ¨ Analysér med AI'}
+                  {loading ? '⏳ Analyserer...' : '✨ Analysér med AI'}
                 </button>
               </div>
             ) : (
@@ -245,7 +245,7 @@ export default function AddItem({ onBack, onSaved }) {
             </div>
             {error && <p style={styles.error}>{error}</p>}
             <button onClick={handleGenerateVinted} style={styles.primaryBtn} disabled={loading}>
-              {loading ? 'â³ Genererer opslag...' : 'âœï¸ Lav Vinted-opslag'}
+              {loading ? '⏳ Genererer opslag...' : 'âœï¸ Lav Vinted-opslag'}
             </button>
           </div>
         )}
@@ -262,7 +262,7 @@ export default function AddItem({ onBack, onSaved }) {
             </button>
             {error && <p style={styles.error}>{error}</p>}
             <button onClick={handleSave} style={styles.primaryBtn} disabled={loading}>
-              {loading ? 'â³ Gemmer...' : 'ðŸ’¾ Gem i katalog'}
+              {loading ? '⏳ Gemmer...' : 'ðŸ’¾ Gem i katalog'}
             </button>
           </div>
         )}
