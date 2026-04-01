@@ -11,48 +11,31 @@ export default function App() {
   const [formData, setFormData] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: session, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-        setUser(session?.user || null);
-      } catch (err) {
-        console.error('Auth check failed:', err);
-        setError(err.message);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkAuth();
+    // Check session on load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+      setLoading(false);
+    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth event:', event);
-        setUser(session?.user || null);
-        setError(null);
-      }
-    );
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
+    return () => subscription?.unsubscribe();
   }, []);
 
-  if (loading) return <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>;
-  if (error) return <div style={{ padding: '20px', color: 'red' }}>Error: {error}</div>;
-
-  if (!user) {
-    return <Login />;
-  }
+  if (loading) return <div style={{ padding: '20px' }}>Loading...</div>;
+  if (!user) return <Login />;
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <header style={{ backgroundColor: '#333', color: 'white', padding: '20px', textAlign: 'center' }}>
-        <h1>Clothing Catalog - Vinted Listings</h1>
+        <h1>👕 Tøjkatalog → Vinted-opslag</h1>
       </header>
 
       <main>
