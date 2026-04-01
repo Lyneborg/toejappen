@@ -197,7 +197,7 @@ export default function AddItem({ onBack, onSaved }) {
               </div>
             ) : (
               <div style={styles.uploadArea} onClick={() => fileRef.current.click()}>
-                <div style={styles.uploadIcon}>ðŸ“·</div>
+                <div style={styles.uploadIcon}>📷</div>
                 <p style={styles.uploadText}>Tryk for at tage billede</p>
                 <p style={styles.uploadHint}>eller vælg fra galleri</p>
               </div>
@@ -258,11 +258,11 @@ export default function AddItem({ onBack, onSaved }) {
               <p style={styles.listingText}>{vintedListing}</p>
             </div>
             <button onClick={handleCopy} style={styles.copyBtn}>
-              {copied ? 'âœ… Kopieret!' : 'ðŸ“‹ Kopiér opslag'}
+              {copied ? '✅ Kopieret!' : '📋 Kopiér opslag'}
             </button>
             {error && <p style={styles.error}>{error}</p>}
             <button onClick={handleSave} style={styles.primaryBtn} disabled={loading}>
-              {loading ? '⏳ Gemmer...' : 'ðŸ’¾ Gem i katalog'}
+              {loading ? '⏳ Gemmer...' : '💾 Gem i katalog'}
             </button>
           </div>
         )}
