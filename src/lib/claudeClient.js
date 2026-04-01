@@ -11,7 +11,7 @@ export async function generateListing(formData) {
     messages: [
       {
         role: 'user',
-        content: \`Du skriver Vinted-opslag på dansk.
+        content: `Du skriver Vinted-opslag på dansk.
 
 Tøjstykke:
 - Mærke: ${formData.brand}
@@ -21,10 +21,10 @@ Tøjstykke:
 - Stand: ${formData.condition}
 - Størrelse: ${formData.size}
 - Pris: ${formData.price} kr
-${formData.notes ? \`- Noter: ${formData.notes}\` : ''}
+${formData.notes ? `- Noter: ${formData.notes}` : ''}
 
 Skriv et kort Vinted-opslag (50-80 ord). Venlig, uformel tone. Start med mærke og type.
-Returner KUN teksten, ingen forklaring.\`,
+Returner KUN teksten, ingen forklaring.`,
       },
     ],
   });
