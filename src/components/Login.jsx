@@ -46,7 +46,7 @@ export default function Login() {
 
         {magicLinkSent ? (
           <div style={styles.successBox}>
-            <div style={styles.successIcon}>ðŸ“¬</div>
+            <div style={styles.successIcon}>📬</div>
             <p style={styles.successText}>
               Vi har sendt et login-link til <strong>{email}</strong>.
               Tjek din indbakke og tryk på linket.
@@ -83,7 +83,7 @@ export default function Login() {
               </button>
             </form>
             <button style={styles.linkButton} onClick={() => { setUsePassword(false); setError('') }}>
-              â† Send mig et login-link i stedet
+              ← Send mig et login-link i stedet
             </button>
           </>
         ) : (
