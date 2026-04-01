@@ -14,7 +14,6 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check initial session
     const checkAuth = async () => {
       try {
         const { data: session, error: sessionError } = await supabase.auth.getSession();
@@ -30,20 +29,16 @@ export default function App() {
     };
     checkAuth();
 
-    // Listen for auth state changes (login/logout)
-    const { data: authListener } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event);
+        console.log('Auth event:', event);
         setUser(session?.user || null);
         setError(null);
       }
     );
 
-    // Cleanup
     return () => {
-      if (authListener?.subscription) {
-        authListener.subscription.unsubscribe();
-      }
+      subscription?.unsubscribe();
     };
   }, []);
 
