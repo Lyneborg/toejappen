@@ -245,7 +245,7 @@ export default function AddItem({ onBack, onSaved }) {
             </div>
             {error && <p style={styles.error}>{error}</p>}
             <button onClick={handleGenerateVinted} style={styles.primaryBtn} disabled={loading}>
-              {loading ? '⏳ Genererer opslag...' : 'âœï¸ Lav Vinted-opslag'}
+              {loading ? '⏳ Genererer opslag...' : '✍️ Lav Vinted-opslag'}
             </button>
           </div>
         )}
